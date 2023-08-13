@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 import NotificationCard from "@/components/notification-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -73,19 +77,32 @@ const HomePage: React.FC = () => {
     },
   ];
 
+  const [data, setData] = useState<NotificationProps[]>(rawData);
+
+  const onClick = () => {
+    const newData = data.map((notification) => ({
+      ...notification,
+      featured: false,
+    }));
+
+    setData(newData);
+  };
+
   return (
     <div className="bg-white p-4 md:p-6 rounded-xl flex flex-1 flex-col max-w-3xl w-full h-screen md:h-full">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-x-2">
           <h3 className="text-2xl font-semibold">Notifications</h3>
-          <Badge variant="default">3</Badge>
+          <Badge variant="default">
+            {data.filter((data) => data.featured).length}
+          </Badge>
         </div>
-        <Button size="sm" variant="ghost">
+        <Button onClick={onClick} size="sm" variant="ghost">
           Mark all as read
         </Button>
       </div>
       <div className="flex flex-col gap-y-2 my-6 overflow-y-auto">
-        {rawData.map((notification) => (
+        {data.map((notification) => (
           <NotificationCard
             key={notification.name}
             notification={notification}
